@@ -1,0 +1,22 @@
+{
+  "name": "certificate-generator",
+  "version": "1.0.0",
+  "description": "undefined",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NakshatraCodes/certificate-generator.git"
+  },
+  "author": "Naksh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NakshatraCodes/certificate-generator/issues"
+  },
+  "homepage": "https://github.com/NakshatraCodes/certificate-generator#readme",
+  "dependencies": {
+    "pdf-lib": "^1.16.0"
+  }
+}
