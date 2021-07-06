@@ -1,86 +1,48 @@
-const { PDFDocument, rgb, StandardFonts } = require("pdf-lib");
-const fs = require("fs");
+const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
+const fs = require('fs');
+const path = require('path');
 
-const generatePDF = async ({
-  name,
-  institute,
-  course,
-  date,
-  user_id,
-  course_id,
-}) => {
+const generatePDF = async ({ name, id }) => {
   return new Promise(async (resolve, reject) => {
     name = name.toUpperCase();
-    user_id = user_id.toUpperCase();
-    course_id = course_id.toUpperCase();
+    id = id.toUpperCase();
 
     try {
-      const pdfDoc = await PDFDocument.load(
-        fs.readFileSync("./certificate.pdf")
+      const pdfDoc = await PDFDocument.load(fs.readFileSync('./amity.pdf'));
+      const timesRomanFont = await pdfDoc.embedFont(
+        StandardFonts.HelveticaBold
       );
-      const timesRomanFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
       const pages = pdfDoc.getPages();
       const certificate = pages[0];
 
       const { width, height } = certificate.getSize();
-      console.log(width, height);
 
       // Draw Name
       certificate.drawText(name, {
-        x: 65,
-        y: height / 2,
+        x: 270,
+        y: height / 2 + 10,
         size: 30,
         font: timesRomanFont,
-        color: rgb(0, 0.53, 0.71),
+        color: rgb(0.945, 0.3725, 0.5647),
       });
 
-      // Draw Institute
-      certificate.drawText(institute, {
-        x: 95,
-        y: 205,
-        size: 25,
-        font: timesRomanFont,
-        color: rgb(0.22, 0.23, 0.22),
-      });
-
-      // Draw Institute
-      certificate.drawText(course, {
-        x: 95,
-        y: 155,
-        size: 16,
-        font: timesRomanFont,
-        color: rgb(0.22, 0.23, 0.22),
-      });
-
-      // Draw Date
-      certificate.drawText(date, {
-        x: 485,
-        y: 205,
-        size: 16,
-        font: timesRomanFont,
-        color: rgb(0.22, 0.23, 0.22),
-      });
-
-      // Draw UserID
-      certificate.drawText(user_id, {
-        x: 65,
-        y: 255,
-        size: 12,
-        font: timesRomanFont,
-        color: rgb(0.22, 0.23, 0.22),
-      });
-
-      // Draw CourseID
-      certificate.drawText(course_id, {
-        x: 95,
-        y: 138,
-        size: 10,
+      certificate.drawText(id, {
+        x: width / 2 + 30,
+        y: 20,
+        size: 8,
         font: timesRomanFont,
         color: rgb(0.22, 0.23, 0.22),
       });
 
       const uri = await pdfDoc.saveAsBase64({ dataUri: true });
+      await fs.writeFile(
+        path.join(__dirname, 'certificates', `${id}.pdf`),
+        await pdfDoc.save(),
+        () => {
+          console.log('Saved Certificate');
+        }
+      );
       resolve({
         success: true,
         pdfURI: uri,
